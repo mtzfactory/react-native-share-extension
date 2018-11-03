@@ -27,14 +27,6 @@ NSExtensionContext* extensionContext;
   return dispatch_get_main_queue();
 }
 
-RCT_EXPORT_METHOD(openURL:(NSString *)url) {
-    UIApplication *application = [UIApplication sharedApplication];
-    NSURL *urlToOpen = [NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-    [application openURL:urlToOpen options:@{} completionHandler: nil];
-}
-
-RCT_EXPORT_MODULE();
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -50,13 +42,18 @@ RCT_EXPORT_MODULE();
     self.view = rootView;
 }
 
+RCT_EXPORT_MODULE();
+
+RCT_EXPORT_METHOD(openURL:(NSString *)url) {
+    UIApplication *application = [UIApplication sharedApplication];
+    NSURL *urlToOpen = [NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    [application openURL:urlToOpen options:@{} completionHandler: nil];
+}
 
 RCT_EXPORT_METHOD(close) {
     [extensionContext completeRequestReturningItems:nil
                                   completionHandler:nil];
 }
-
-
 
 RCT_REMAP_METHOD(data,
                  resolver:(RCTPromiseResolveBlock)resolve
@@ -157,7 +154,5 @@ RCT_REMAP_METHOD(data,
         }
     }
 }
-
-
 
 @end
