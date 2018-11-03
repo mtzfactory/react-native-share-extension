@@ -18,6 +18,21 @@ NSExtensionContext* extensionContext;
     return nil;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
+- (dispatch_queue_t) methodQueue {
+  return dispatch_get_main_queue();
+}
+
+RCT_EXPORT_METHOD(openURL:(NSString *)url) {
+    UIApplication *application = [UIApplication sharedApplication];
+    NSURL *urlToOpen = [NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+    [application openURL:urlToOpen options:@{} completionHandler: nil];
+}
+
 RCT_EXPORT_MODULE();
 
 - (void)viewDidLoad {
@@ -87,7 +102,7 @@ RCT_REMAP_METHOD(data,
                 NSURL *url = (NSURL *)item;
 
                 if(callback) {
-                    callback([url absoluteString], @"text/plain", nil);
+                    callback([url absoluteString], @"url/plain", nil);
                 }
             }];
         } else if (imageProvider) {
@@ -114,9 +129,12 @@ RCT_REMAP_METHOD(data,
                 }
                 
                 [UIImagePNGRepresentation(sharedImage) writeToFile:fullPath atomically:YES];
+
+                NSString *imageExtension = [[fullPath pathExtension] lowercaseString];
+                NSString *imageType = [NSString stringWithFormat:@"image/%@", imageExtension];
                 
                 if(callback) {
-                    callback(fullPath, [fullPath pathExtension], nil);
+                    callback(fullPath, imageType, nil);
                 }
             }];
         } else if (textProvider) {
