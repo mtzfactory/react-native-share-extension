@@ -2,3 +2,13 @@
 *.iml
 .tags
 .tags1
+
+# mtFactory
+.gradle/
+.idea/
+build/
+gradle/
+android/local.properties
+gradlew
+gradlew.bat
+android.iml
